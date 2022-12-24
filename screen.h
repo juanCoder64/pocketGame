@@ -3,7 +3,7 @@
 
 #ifndef SCREEN_H
 #define SCREEN_H
-#define INVERTED true
+#define INVERTED false
 #if INVERTED 
 #define BLACK 0xFFFF
 #define WHITE 0x0000
@@ -40,7 +40,7 @@ public:
   void circle(float x, float y, uint8_t radius, uint16_t color);
   void line(uint8_t x, uint8_t y, uint8_t w, uint16_t color);
   void fontsize(int n);
-  uint32_t height = 80;
+  uint32_t height = 128;
   uint32_t width = 160;
   int menu(const char* name, const char* options);
   void centerText(int16_t y, String message, uint16_t color);

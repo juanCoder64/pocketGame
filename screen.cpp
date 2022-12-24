@@ -14,8 +14,8 @@ screen::screen() {
 
 void screen::beginScreen() {
 
-  tft.initR(INITR_MINI160x80);
-    //tft.initR(INITR_GREENTAB);
+  //tft.initR(INITR_MINI160x80);
+    tft.initR(INITR_GREENTAB);
 
   tft.setRotation(3);
   //tft.invertDisplay(true);
