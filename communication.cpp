@@ -1,30 +1,60 @@
-/*#include "Arduino.h"
+#include "Arduino.h"
 #include "communication.h"
 #include <ESP8266WiFi.h>
+#include <WiFiManager.h> 
+#include <ESP8266WiFi.h>
+#include <WiFiUdp.h>
+#include "menu.h"
+#include "screen.h"
+#define UDP_PORT 4210
 
-IPAddress server(192, 168, 0, 80);    // the fix IP address of the server
-WiFiClient client;
+WiFiUDP UDP;
+MENU wifiMode;
 
 communication::communication() {
 
 }
 void communication::begin() {
-  //inicia la comumicacion WiFi
-  Serial.begin(115200);               // only for debug
-  WiFi.begin(ssid, pass);             // connects to the WiFi router
-  while (WiFi.status() != WL_CONNECTED) {
-    Serial.print(".");
-    delay(500);
-  }
+  wifiMode.begin();
+  UDP.begin(UDP_PORT);
 }
 float communication::talk() {
-  //se comunica con el otro jugador
-  client.connect(server, 80);   // Connection to the server
-  Serial.println(".");
-  client.println("\r"); // sends the message to the server
-  String answer = client.readStringUntil('\r');   // receives the answer from the sever
-  Serial.println(answer);
-  client.flush();
-  return answer.toFloat();
 }
-*/
+bool communication::connect() {
+  if (mode == -1) {
+    String opt[2] = { "hostpot", "connect to existing" };
+    mode = wifiMode.show("Wifi?", opt, 2);
+
+  }
+  else if (!wifiReady) {
+    if (mode == 1) {
+      WiFiManager wifiManager;
+      wifiManager.setDarkMode(true);
+      wifiManager.autoConnect();
+      ip = WiFi.localIP().toString();
+      wifiReady = true;
+      erase();
+    }
+    if (mode == 0) {
+
+      WiFi.softAP("pocketGame");
+      ip = WiFi.softAPIP().toString();
+      wifiReady = true;
+      erase();
+    }
+  }
+  else {
+    fontsize(2);
+    centerText(height / 2 - 20, "Waiting for second  player", RED);
+    fontsize(1);
+    centerText(height / 2 + 20, "IP:" + ip, BLUE);
+  }
+  if (UDP.parsePacket() > 0) {
+    erase();
+    return 1;
+  }
+  return 0;
+}
+int communication::packetSize() {
+  return UDP.parsePacket();
+}

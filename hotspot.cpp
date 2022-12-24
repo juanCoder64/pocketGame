@@ -28,7 +28,7 @@ void hotspot::run() {
     centerText(64, "SSID: pocketGame",GREEN);
     centerText(74, "Password: " + password, GREEN);
     centerText(54, "Press B to exit", RED);
-    if (anyPressed()) ESP.restart();
+    if (getbutton("B")) ESP.restart();
     
 
 }

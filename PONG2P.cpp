@@ -2,15 +2,8 @@
 #include "PONG2P.h"
 #include "communication.h"
 #include "controls.h"
-#include <WiFiManager.h> 
-#include <ESP8266WiFi.h>
-#include <WiFiUdp.h>
-#include "menu.h"
-#define UDP_PORT 4210
 
-WiFiUDP UDP;
-MENU wifiMode;
-
+communication Player2;
 #include <Adafruit_ST7735.h>   // include Adafruit ST7735 TFT library
 #define P1X (width-PW*2)
 #define P2X 0
@@ -21,49 +14,19 @@ PONG2P::PONG2P() {
 
 void PONG2P::begin() {
   erase();
-  wifiMode.begin();
+  Player2.begin();
 
   //WiFi.begin(WIFI_SSID, WIFI_PASS);
   //while (WiFi.status() != WL_CONNECTED) {
   //  delay(100);
   //}
-  UDP.begin(UDP_PORT);
-  erase();
 
 }
 
 void PONG2P::run() {
 
   if (!P2ready) {
-    if (chosen == -1) {
-      String opt[2] = { "hostpot", "connect to existing" };
-      chosen = wifiMode.show("Wifi?", opt, 2);
-
-    }
-    else if (chosen == 0 && !Wready) {
-      erase();
-      Serial.print("inside");
-      WiFi.softAP("huh", "password");
-      ip = WiFi.softAPIP().toString();
-      Wready = true;
-    }
-    else if (chosen == 1 && !Wready) {
-      erase();
-      WiFiManager wifiManager;
-      wifiManager.setDarkMode(true);
-      wifiManager.autoConnect();
-      ip = WiFi.localIP().toString();
-      Wready = true;
-
-    }
-    if (Wready) {
-      fontsize(2);
-      centerText(height / 2-20, "Waiting for second  player", RED);
-      fontsize(1);
-      centerText(height / 2 + 20, "IP:" + ip, BLUE);
-    }
-    P2ready = UDP.parsePacket() > 0;
-
+        P2ready = Player2.connect();
   }
   else {
     if (!gameover) {
@@ -180,7 +143,7 @@ void PONG2P::move() {
 }
 void PONG2P::cpu() {
   //moves CPU
-  int packetSize = UDP.parsePacket();
+  int packetSize = Player2.packetSize();
   if (packetSize == 4) {
     P2Y += 1;
   }
