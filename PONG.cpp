@@ -40,7 +40,7 @@ void PONG::draw() {
     if (!gameover) {
       //draws ball
       if (LballX != ballX || LballY != ballY) {
-        circle(LballX, LballY, Lrad, ST77XX_BLACK);
+        circle(LballX, LballY, Lrad, BLACK);
         circle(ballX, ballY, rad, GREEN);
 
       }
