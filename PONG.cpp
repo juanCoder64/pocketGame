@@ -4,7 +4,7 @@
 #include "controls.h"
 
 
-#include <Adafruit_ST7735.h>   // include Adafruit ST7735 TFT library
+#include <Adafruit_ST7735.h>   
 #define P1X (width-PW*2)
 #define P2X 0
 
@@ -13,8 +13,8 @@ PONG::PONG() {
 }
 
 void PONG::begin() {
+  //prepares for game
   erase();
-  Serial.begin(115200);
 }
 
 void PONG::run() {
@@ -28,14 +28,11 @@ void PONG::run() {
     //if game is over wait for A to be pressed
     if (getbutton("A"))gameover = false, erase(), P1Score = 0, P2Score = 0;
     else if (getbutton("B"))ESP.restart();
-    //ballSpdX += 0.1;
-    //ballSpdY +=0.1;
   }
   draw();
-
 }
 void PONG::draw() {
-  //erase();
+  erase(); //uncomment if screen can erase everything quickly
   do {
     if (!gameover) {
       //draws ball
@@ -90,13 +87,13 @@ bool inRange(float min, float max, float x) {
 }
 bool PONG::bounceP(uint8_t P) {
   if (P == 2) {
-    if (inRange(P2Y-rad, P2Y+rad + PH, ballY))
+    if (inRange(P2Y - rad, P2Y + rad + PH, ballY))
       if (inRange(P2X, P2X + PW, ballX))
         return 1;
     return 0;
   }
   else {
-    if (inRange(P1Y-rad, P1Y+rad + PH, ballY))
+    if (inRange(P1Y - rad, P1Y + rad + PH, ballY))
       if (inRange(P1X, P1X + PW, ballX))
         return 1;
     return 0;
@@ -105,9 +102,9 @@ bool PONG::bounceP(uint8_t P) {
 }
 void PONG::move() {
   //bounces ball with player
-  
+
   //if ((((ballY + rad > P2Y && ballY + rad < P2Y + PH) || (ballY - rad > P2Y && ballY - rad < P2Y + PH)) && ballX <= PW) || (((ballY + rad > P1Y && ballY + rad < P1Y + PH) || (ballY - rad > P1Y && ballY - rad < P1Y + PH)) && ballX >= width - PW)) {
-  if(bounceP(1)){
+  if (bounceP(1)) {
     ballSpdX = -ballSpdX; //inverses direction
     ballSpdX = ballSpdX > 0 ? ballSpdX + .01 : ballSpdX - .01;//speeds up ball
     ballSpdY = ballSpdY > 0 ? ballSpdY + .01 : ballSpdY - .01;//speeds up ball

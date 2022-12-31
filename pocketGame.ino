@@ -5,8 +5,6 @@
 #include "hotspot.h"
 #include "PONG2P.h"
 
-//number of options to show on the main menu
-#define ngames 5
 //array with the main menu options
 String games[] = { "Pong", "Breakout", "Test", "Hotspot", "PONG2P" };
 

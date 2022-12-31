@@ -8,8 +8,6 @@ public:
   hotspot();
   void begin();
   void run();
-
-
 private:
   String getPass();
   String password = String(random(100000000, 1000000000));

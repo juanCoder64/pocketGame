@@ -4,7 +4,7 @@
 #include "controls.h"
 
 communication Player2;
-#include <Adafruit_ST7735.h>   // include Adafruit ST7735 TFT library
+#include <Adafruit_ST7735.h>  
 #define P1X (width-PW*2)
 #define P2X 0
 
@@ -15,12 +15,6 @@ PONG2P::PONG2P() {
 void PONG2P::begin() {
   erase();
   Player2.begin();
-
-  //WiFi.begin(WIFI_SSID, WIFI_PASS);
-  //while (WiFi.status() != WL_CONNECTED) {
-  //  delay(100);
-  //}
-
 }
 
 void PONG2P::run() {
@@ -39,8 +33,6 @@ void PONG2P::run() {
       //if game is over wait for A to be pressed
       if (getbutton("A"))gameover = false, erase(), P1Score = 0, P2Score = 0;
       else if (getbutton("B"))ESP.restart();
-      //ballSpdX += 0.1;
-      //ballSpdY +=0.1;
     }
     draw();
 
@@ -75,18 +67,13 @@ void PONG2P::draw() {
         centerText(0, score, GREEN);
       }
       //erase();
-      //draws ball
-      //draws player 2
-      //draws player 1
+      //draws line separing score and game
       line(0, upperBorder, width, GREEN);
-
-      //draws score
-
 
       LballX = ballX, LballY = ballY, Lrad = rad, LP2Y = P2Y, LP1Y = P1Y, Lscore = score;
     }
     else {
-      //draws game over screen
+      //draws gameover screen
       bigfont();
       centerText(32, winner + " wins", BLUE);
       smallfont();

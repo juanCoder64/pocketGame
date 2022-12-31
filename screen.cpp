@@ -13,7 +13,7 @@ screen::screen() {
 }
 
 void screen::beginScreen() {
-
+  //starts the screen
   //tft.initR(INITR_MINI160x80);
     tft.initR(INITR_GREENTAB);
 
@@ -27,7 +27,8 @@ void screen::beginScreen() {
     oled.setFontDirection(0);*/
 }
 void screen::erase() {
-  tft.fillScreen(BLACK );
+  //blank the screen
+  tft.fillScreen(BLACK);
   //oled.firstPage();
 }
 bool screen::send() {
