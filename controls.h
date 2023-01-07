@@ -4,11 +4,9 @@
 #ifndef CONTROLS_H
 #define CONTROLS_H
 #include "Arduino.h"
-class controls {
-  public:
-    controls();
-    void beginControls();
-    bool anyPressed();
-    bool getbutton(String a);
+namespace controls {
+  void beginControls();
+  bool anyPressed();
+  bool getbutton(String a);
 };
 #endif

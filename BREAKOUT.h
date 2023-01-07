@@ -1,9 +1,11 @@
 #ifndef BREAKOUT_H
 #define BREAKOUT_h
 #include "controls.h"
-#include "screen.h"
+#include "HWdefinitions.h"
+
+#include screenLib
 #include "Arduino.h"
-class BREAKOUT: public controls, public screen {
+class BREAKOUT {
   public:
     BREAKOUT();
     void begin();

@@ -1,6 +1,8 @@
-#include "BREAKOUT.h"
-#include "PONG.h"
+
 #include "menu.h"
+#include screenLib
+#include "PONG.h"
+#include "BREAKOUT.h"
 #include "S_C.h"
 #include "hotspot.h"
 #include "PONG2P.h"
@@ -23,7 +25,7 @@ bool firstRun = true;
 
 void setup() {
   //starts the start menu
-  start.beginScreen();
+  screen::beginScreen();
   start.begin();
   Serial.begin(115200);
 

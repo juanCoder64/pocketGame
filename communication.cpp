@@ -5,7 +5,9 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 #include "menu.h"
-#include "screen.h"
+#include "HWdefinitions.h"
+
+#include screenLib
 #define UDP_PORT 4210
 
 WiFiUDP UDP;
@@ -39,7 +41,7 @@ bool communication::connect() {
       //get IP
       ip = WiFi.localIP().toString();
       wifiReady = true;
-      erase();
+      screen::erase();
     }
     if (mode == 0) {
       //in case hotspot was chosen
@@ -48,19 +50,18 @@ bool communication::connect() {
       //gets IP
       ip = WiFi.softAPIP().toString();
       wifiReady = true;
-      erase();
+      screen::erase();
     }
   }
   else {
     //once Wifi is done, wait for secund player
-    fontsize(2);
-    centerText(height / 2 - 20, "Waiting for second  player", RED);
-    fontsize(1);
-    centerText(height / 2 + 20, "IP:" + ip, BLUE);
+    screen::fontsize(1);
+    screen::centerText(screen::height / 2 - 20, "Waiting for second  player", RED);
+    screen::centerText(screen::height / 2 + 20, "IP:" + ip, BLUE);
   }
   if (UDP.parsePacket() > 0) {
     //if a packet is recieved then second player has connected
-    erase();
+    screen::erase();
     return 1;
   }
   return 0;

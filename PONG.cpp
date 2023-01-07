@@ -1,11 +1,11 @@
 #include "Arduino.h"
 #include "PONG.h"
-#include "communication.h"
+//#include "communication.h"
 #include "controls.h"
 
 
 #include <Adafruit_ST7735.h>   
-#define P1X (width-PW*2)
+#define P1X (screen::width -PW*2)
 #define P2X 0
 
 PONG::PONG() {
@@ -14,7 +14,7 @@ PONG::PONG() {
 
 void PONG::begin() {
   //prepares for game
-  erase();
+  screen::erase();
 }
 
 void PONG::run() {
@@ -26,61 +26,68 @@ void PONG::run() {
   }
   else {
     //if game is over wait for A to be pressed
-    if (getbutton("A"))gameover = false, erase(), P1Score = 0, P2Score = 0;
-    else if (getbutton("B"))ESP.restart();
+    if (controls::getbutton("A"))gameover = false, screen::erase(), P1Score = 0, P2Score = 0;
+    else if (controls::getbutton("B"))ESP.restart();
   }
   draw();
 }
 void PONG::draw() {
-  erase(); //uncomment if screen can erase everything quickly
+#if fasterase
+  erase();
+#endif
   do {
+#if not faserase 
     if (!gameover) {
       //draws ball
       if (LballX != ballX || LballY != ballY) {
-        circle(LballX, LballY, Lrad, BLACK);
-        circle(ballX, ballY, rad, GREEN);
+        screen::circle(LballX, LballY, Lrad, BLACK);
+        screen::circle(ballX, ballY, rad, GREEN);
 
       }
       //draws player 2
       if (LP2Y != P2Y) {
-        rect(0, LP2Y, PW, PH, BLACK);
-        rect(0, P2Y, PW, PH, BLUE);
+        screen::rect(0, LP2Y, PW, PH, BLACK);
+        screen::rect(0, P2Y, PW, PH, BLUE);
 
       }
       //draws player 1
-      rect(width - PW * 2, LP1Y, PW, PH, BLACK);
-      rect(width - PW * 2, P1Y, PW, PH, RED);
+      screen::rect(screen::width - PW * 2, LP1Y, PW, PH, BLACK);
+      screen::rect(screen::width - PW * 2, P1Y, PW, PH, RED);
 
       //draws score
       if (score != Lscore) {
-        smallfont();
-        centerText(0, Lscore, BLACK);
-        smallfont();
-        centerText(0, score, GREEN);
+        screen::smallfont();
+        screen::centerText(0, Lscore, BLACK);
+        screen::smallfont();
+        screen::centerText(0, score, GREEN);
       }
-      //erase();
-      //draws ball
-      //draws player 2
-      //draws player 1
-      line(0, upperBorder, width, GREEN);
+#else
+    screen::circle(ballX, ballY, rad, GREEN);
+    screen::rect(0, P2Y, PW, PH, BLUE);
+    screen::rect(width - PW * 2, P1Y, PW, PH, RED);
+    screen::smallfont();
+    screen::centerText(0, score, GREEN);
 
-      //draws score
+#endif
+    screen::line(0, upperBorder, screen::width, GREEN);
+
+    //draws score
 
 
-      LballX = ballX, LballY = ballY, Lrad = rad, LP2Y = P2Y, LP1Y = P1Y, Lscore = score;
+    LballX = ballX, LballY = ballY, Lrad = rad, LP2Y = P2Y, LP1Y = P1Y, Lscore = score;
     }
     else {
       //draws game over screen
 
 
-      bigfont();
-      centerText(32, winner + " wins", BLUE);
-      smallfont();
-      centerText(64, "press A to continue", CYAN);
-      centerText(74, "press B to exit", CYAN);
+      screen::bigfont();
+      screen::centerText(32, winner + " wins", BLUE);
+      screen::smallfont();
+      screen::centerText(64, "press A to continue", CYAN);
+      screen::centerText(74, "press B to exit", CYAN);
 
     }
-  } while (send());
+  } while (screen::send());
 }
 bool inRange(float min, float max, float x) {
   return x > min && x < max;
@@ -122,7 +129,7 @@ void PONG::move() {
 
   if (ballX + rad > PW)
     //bounces ball with borders
-    if (ballY + rad > height || ballY - rad < upperBorder)  ballSpdY = -ballSpdY;
+    if (ballY + rad > screen::height || ballY - rad < upperBorder)  ballSpdY = -ballSpdY;
   //moves ball
   ballY += ballSpdY;
   ballX += ballSpdX;
@@ -131,35 +138,35 @@ void PONG::cpu() {
   //moves CPU
   P2Y < ballY ? P2Y += 0.2 : P2Y -= 0.2;
   //ballSpdY > 0 ? P2Y += pSpd : P2Y -= pSpd;
-  if (P2Y + PH > height)P2Y = height - PH;
+  if (P2Y + PH > screen::height)P2Y = screen::height - PH;
   if (P2Y < upperBorder)P2Y = upperBorder;
 }
 void PONG::P1() {
   //moves player 1
-  if (getbutton("UP")) P1Y -= pSpd;
-  if (getbutton("DOWN"))P1Y += pSpd;
-  if (P1Y + PH > height)P1Y = height - PH;
+  if (controls::getbutton("UP")) P1Y -= pSpd;
+  if (controls::getbutton("DOWN"))P1Y += pSpd;
+  if (P1Y + PH > screen::height)P1Y = screen::height - PH;
   if (P1Y < upperBorder)P1Y = upperBorder;
 }
 void PONG::scoreCheck() {
   //check if someone scored
-  if (ballX < 0 || ballX > width) {
+  if (ballX < 0 || ballX > screen::width) {
     if (ballX < 0) {
       //P2 scored
       ballSpdX = -0.2;
       ballSpdY = -0.2;
-      min = width / 2;
-      max = width;
+      min = screen::width / 2;
+      max = screen::width;
       P2Score++;
-      ballX = width - (PW + 1);
+      ballX = screen::width - (PW + 1);
       ballY = P2Y + PH / 2;
     }
-    if (ballX > width) {
+    if (ballX > screen::width) {
       //P1 scored
       ballSpdX = 0.2;
       ballSpdY = 0.2;
       min = PH;
-      max = width / 2;
+      max = screen::width / 2;
       ballX = PH + 1;
       ballY = P1Y + PH / 2;
       P1Score++;
@@ -177,7 +184,7 @@ void PONG::scoreCheck() {
     //decides who won
     gameover = true;
     winner = P2Score > P1Score ? "P1" : "P2";
-    erase();
+    screen::erase();
   }
   //updates score
   score = "P2: " + String(P1Score) + "  |" + "   P1: " + String(P2Score);

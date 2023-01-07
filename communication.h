@@ -2,10 +2,12 @@
   para comunicarse con el control del jugador 2
 */
 #include "Arduino.h"
-#include "screen.h"
+#include "HWdefinitions.h"
+
+#include screenLib
 #ifndef COMUNICATION_H
 #define COMUNICATION_H
-class communication: public screen {
+class communication  {
 public:
   communication();
   void begin();

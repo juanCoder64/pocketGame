@@ -2,11 +2,13 @@
   el juego PONG
 */
 #include "controls.h"
-#include "screen.h"
+#include "HWdefinitions.h"
+
+#include screenLib
 #include "Arduino.h"
 #ifndef PONG_h
 #define PONG_h
-class PONG: public controls, public screen {
+class PONG {
   public:
     PONG();
     void begin();
@@ -19,7 +21,7 @@ class PONG: public controls, public screen {
     void P1();
     void scoreCheck();
     float pSpd = 0.2;
-    float ballX = random(rad+upperBorder+1, width - rad-1), ballY = random(upperBorder + rad+1, height - rad-1);
+    float ballX = random(rad+upperBorder+1, screen::width - rad-1), ballY = random(upperBorder + rad+1, screen::height - rad-1);
     float ballSpdX = 0.2, ballSpdY = 0.2;
     int upperBorder = 10, maxScore = 6, rad = 3;
     float P2Y = 32, P1Y = 32;

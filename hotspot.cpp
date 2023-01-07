@@ -22,14 +22,14 @@ hotspot::hotspot() {
 }*/
 void hotspot::begin() {
     WiFi.softAP("pocketGame", password);
-    erase();
+    screen::erase();
 }
 void hotspot::run() {
     //shows credentials and checks if exit button has been pressed
-    centerText(64, "SSID: pocketGame", GREEN);
-    centerText(74, "Password: " + password, GREEN);
-    centerText(54, "Press B to exit", RED);
-    if (getbutton("B")) ESP.restart();
+    screen::centerText(screen::height/2, "SSID: pocketGame", GREEN);
+    screen::centerText(screen::height/2+10, "Password: " + password, GREEN);
+    screen::centerText(screen::height-10, "Press B to exit", RED);
+    if (controls::getbutton("B")) ESP.restart();
 
 
 }

@@ -1,9 +1,11 @@
  #ifndef MENU_H
 #define MENU_H
 #include "Arduino.h"
-#include "screen.h"
+#include "HWdefinitions.h"
+
+#include screenLib
 #include "controls.h"
-class MENU: public controls, public screen {
+class MENU {
   public:
     MENU();
     void begin();
